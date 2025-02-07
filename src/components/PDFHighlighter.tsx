@@ -6,10 +6,14 @@ import "./highlighter.css";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
 
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-  "pdfjs-dist/build/pdf.worker.min.mjs",
-  import.meta.url
-).toString();
+// pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+//   "pdfjs-dist/build/pdf.worker.min.mjs",
+//   import.meta.url
+// ).toString();
+
+
+pdfjs.GlobalWorkerOptions.workerSrc = `${process.env.REACT_APP_PUBLIC_URL}/pdf.worker.min.mjs`;
+
 
 type Reference = {
   content: string;
