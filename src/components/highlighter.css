@@ -1,26 +1,29 @@
 .reference-container {
   width: 25%;
   padding: 16px;
-  background-color: #e5e7eb; /* Equivalent to Tailwind bg-gray-200 */
+  background-color: #e5e7eb;
 }
 
 .reference-button {
   display: block;
   width: 100%;
-  padding: 8px;
+  padding: 16px;
   margin-bottom: 8px;
-  background-color: #3b82f6; /* Equivalent to Tailwind bg-blue-500 */
-  color: white;
+  background-color: white;
   border: none;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 13px;
   text-align: left;
-  border-radius: 4px;
-  transition: background-color 0.2s;
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+
+.reference-button.active {
+  outline: 2px solid blue;
 }
 
 .reference-button:hover {
-  background-color: #2563eb; /* Darker blue on hover */
+  background-color: rgb(246, 246, 206);
 }
 
 .pdf-container {
@@ -33,4 +36,9 @@
 
 .container {
   display: flex;
+}
+
+.highlighted {
+  background-color: yellow;
+  color: black !important;
 }

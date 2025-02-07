@@ -1,5 +1,5 @@
 import { Document, Page, pdfjs } from "react-pdf";
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import React from "react";
 import { extractTextFromPDF, getTextHighlightRects } from "../utils/utils";
 import "./highlighter.css";
@@ -36,15 +36,16 @@ const PDFHighlighter = ({ pdfUrl }) => {
   const [numPages, setNumPages] = useState(1);
   const pageRefs = useRef<HTMLDivElement[]>([]);
 
+  const highlightRef = useRef(null);
+  highlightRef.current = highlights;
+
   useEffect(() => {
     async function loadAndSearch() {
       const { pageTextChunks } = await extractTextFromPDF(pdfUrl);
       const matches = getTextHighlightRects(pageTextChunks, searchText);
-      console.log(matches, "matches");
-
       setHighlights(matches);
-
       scrollToHighlight(matches[0]);
+      applyHighlightClass(searchText, matches[0]);
     }
 
     loadAndSearch();
@@ -54,29 +55,34 @@ const PDFHighlighter = ({ pdfUrl }) => {
     setNumPages(pdf.numPages);
   }
 
-  function highlightText(text, highlights, pageIndex) {
-    let modifiedText = text;
-    highlights
-      .filter((h) => h.pageIndex === pageIndex)
-      .forEach(({ rect }) => {
-        if (text.includes(searchText)) {
-          modifiedText = modifiedText.replace(
-            searchText,
-            `<mark>${searchText}</mark>`
-          );
+  const applyHighlightClass = (highlightText, currentPage) => {
+    const pageRef = pageRefs.current[currentPage.pageIndex];
+    if (!pageRef) return;
+
+    document.querySelectorAll(".highlighted").forEach((span) => {
+      span.classList.remove("highlighted");
+    });
+
+    const spans = pageRef.querySelectorAll("span");
+    let highlightWords = highlightText.split(/\s+/);
+
+    let matchIndex = 0;
+    spans.forEach((span) => {
+      const words = span.textContent.trim().split(/\s+/);
+
+      words.forEach((word) => {
+        if (
+          highlightWords[matchIndex] &&
+          word.includes(highlightWords[matchIndex])
+        ) {
+          span.classList.add("highlighted");
+          matchIndex++;
         }
       });
 
-    return modifiedText;
-  }
-
-  const customTextRenderer = useCallback(
-    (textItem, currentPageIndex) => {
-      const pageIndex = currentPageIndex;
-      return highlightText(textItem.str, highlights, pageIndex);
-    },
-    [highlights, searchText]
-  );
+      if (matchIndex >= highlightWords.length) return;
+    });
+  };
 
   const scrollToHighlight = (highlight) => {
     const { pageIndex, rect } = highlight;
@@ -95,8 +101,6 @@ const PDFHighlighter = ({ pdfUrl }) => {
     }, 300);
   };
 
-  console.log(pageRefs, "refs");
-
   return (
     <div className="container">
       <div className="reference-container">
@@ -106,7 +110,9 @@ const PDFHighlighter = ({ pdfUrl }) => {
               setSearchText(ref.content);
             }}
             key={index}
-            className="reference-button"
+            className={`reference-button ${
+              ref.content === searchText ? "active" : ""
+            }`}
           >
             {ref.content}
           </button>
@@ -117,9 +123,6 @@ const PDFHighlighter = ({ pdfUrl }) => {
           {Array.from(new Array(numPages)).map((_, i) => (
             <>
               <Page
-                customTextRenderer={(textItem) =>
-                  customTextRenderer(textItem, i + 1)
-                }
                 renderTextLayer
                 key={i}
                 inputRef={(ref) => {
