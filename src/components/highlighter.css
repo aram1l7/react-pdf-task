@@ -1,0 +1,36 @@
+.reference-container {
+  width: 25%;
+  padding: 16px;
+  background-color: #e5e7eb; /* Equivalent to Tailwind bg-gray-200 */
+}
+
+.reference-button {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 8px;
+  background-color: #3b82f6; /* Equivalent to Tailwind bg-blue-500 */
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  text-align: left;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.reference-button:hover {
+  background-color: #2563eb; /* Darker blue on hover */
+}
+
+.pdf-container {
+  width: 75%;
+  height: 93vh;
+  overflow: auto;
+  padding: 16px;
+  background-color: white;
+}
+
+.container {
+  display: flex;
+}

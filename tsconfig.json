@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "module": "es2020", // or "esnext", "node16", etc.
+    "target": "es2020", // optional but helps with compatibility
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "allowJs": true,
+    "jsx": "react",
+    
+  }
+}
